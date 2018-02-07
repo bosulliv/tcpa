@@ -1,0 +1,48 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# TCPA Intersect
+Quick and dirty benchmark of read and intersect performance on tcpa digit strings
+
+```{r}
+# clean up and garbage collect
+rm(list=ls())
+gc()
+
+library(data.table)
+library(microbenchmark)
+```
+
+```{r}
+# data prep. takes a couple of mins on airbook
+# sed -e s/,//g tcpa_raw.csv > ddi.csv
+setwd("~/Documents/Code/R/tcpa")
+
+# 25 seconds on airbook (SSD, 8GB ram, 1.4Ghz).
+# Note this coerces to integer64 - not a problem for E.164
+ddis <- fread("./data/ddi.csv", col.names = c("ddis"))
+```
+
+```{r}
+library(dplyr)
+glimpse(ddis)
+```
+
+```{r}
+cust_ddis <- fread("./data/1M_clean.csv", col.names = c("ddis"))
+```
+
+```{r}
+library(lubridate)
+start <- now()
+# build index
+setkey(ddis, ddis)
+setkey(cust_ddis, ddis)
+
+# inner join
+ddis[cust_ddis, nomatch=0]
+now() - start
+```
+
