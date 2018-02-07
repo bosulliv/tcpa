@@ -10,14 +10,14 @@ Let's baseline with some quick and dirty alternatives. SQLite3 is faster than ou
 
 Import - 6 minutes.
 
-   `# sqlite3 ddi.sql3`
-   `create table tcpa (ddis integer primary key);`
-   `.import ../data/ddi.csv tcpa`
-   `create table cust_ddis (ddis integer primary key);`
-   `.import ../data/1M_clean.csv cust_ddis`
+    # sqlite3 ddi.sql3
+    create table tcpa (ddis integer primary key);
+    .import ../data/ddi.csv tcpa
+    create table cust_ddis (ddis integer primary key);
+    .import ../data/1M_clean.csv cust_ddis
 
 Then inner join - 2 minutes.
 
-   `select count(*) from tcpa inner join cust_ddis on tcpa.ddis = cust_ddis.ddis;`
+    select count(*) from tcpa inner join cust_ddis on tcpa.ddis = cust_ddis.ddis;
 
 Total = 8 minutes. Much slower, and haven't written to disk.
