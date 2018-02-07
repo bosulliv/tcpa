@@ -6,15 +6,18 @@ This completed in under a minute on a macbook air and used 1GB of memory (1.6Ghz
 The redis equivalent approach on 8 core 2.7Ghz Xeon servers with 24GB of memory took 5-10 minutes.
 
 ## SQLite3
-Let's baseline with some quick and dirty alternatives. SQLite3 is faster than out of the box MySQL for this task:
+Let's baseline with some quick and dirty alternatives. SQLite3 is faster than out of the box MySQL for import, although like slower for inner join:
 
-   `# sqlite3 ddi.sql3
-   create table tcpa (ddis integer);
-   .import ../data/ddi.csv tcpa`
+Import - 6 minutes.
 
-I killed it after 4 minutes - will try with 1M rows and extrapolate:
+   `# sqlite3 ddi.sql3`
+   `create table tcpa (ddis integer primary key);`
+   `.import ../data/ddi.csv tcpa`
+   `create table cust_ddis (ddis integer primary key);`
+   `.import ../data/1M_clean.csv cust_ddis`
 
-   `.import ../data/1M_clear.csv tcpa`
+Then inner join - 2 minutes.
 
-That took 1 second - so I probably killed it before it was about to complete: Run again to completion so we can compare inner join performance. This is something MySQL is likely to outperform.
+   `select count(*) from tcpa inner join cust_ddis on tcpa.ddis = cust_ddis.ddis;`
 
+Total = 8 minutes. Much slower, and haven't written to disk.
