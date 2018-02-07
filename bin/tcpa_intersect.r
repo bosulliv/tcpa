@@ -22,7 +22,7 @@ cust_ddis <- fread("./data/1M_clean.csv", col.names = c("ddis"))
 setkey(ddis, ddis)
 setkey(cust_ddis, ddis)
 
-# inner join
+# inner join & write file
 ddi_interesct <- ddis[cust_ddis, nomatch=0]
 fwrite(ddi_interesct, "./data/ddi_intersect.csv")
 
